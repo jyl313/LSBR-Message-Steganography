@@ -27,7 +27,7 @@ def encode_msg(msg, img):
     shape, img = load_image(img)
     # Hide message in last bit of image pixel
     for i in range(len(binary_msg)):
-        img[i] = change_bit(format(img[i], '08b'), binary_msg[i]
+        img[i] = change_bit(format(img[i], '08b'), binary_msg[i])
     return Image.fromarray(np.reshape(img, shape))
         
 # Decode encoded message in image    
