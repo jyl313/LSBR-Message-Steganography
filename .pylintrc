@@ -1,0 +1,4 @@
+[MESSAGES CONTROL]
+disable=
+  W0621, # (redefined-outer-name)
+  C0200, # (consider-using-enumerate)
