@@ -1,5 +1,6 @@
-from PIL import Image
 import numpy as np
+from PIL import Image
+
 
 def load_image(img: str) -> tuple[tuple, np.ndarray]:
     """
@@ -31,10 +32,10 @@ def convert_msg(msg: str) -> str:
     Returns:
         out (str):  Message converted into binary.
     """
-    binary_msg = ''
+    binary_msg = ""
     for i in msg:
-        binary_msg+= format(ord(i), '08b')
-    binary_msg+='1'
+        binary_msg += format(ord(i), "08b")
+    binary_msg += "1"
     return binary_msg
 
 
@@ -69,7 +70,7 @@ def encode_msg(msg: str, img: str) -> Image.Image:
     shape, img = load_image(img)
     # Hide message in last bit of image pixel
     for i in range(len(binary_msg)):
-        img[i] = change_bit(format(img[i], '08b'), binary_msg[i])
+        img[i] = change_bit(format(img[i], "08b"), binary_msg[i])
     return Image.fromarray(np.reshape(img, shape))
 
 
@@ -78,39 +79,41 @@ def decode_msg(img: str) -> str:
     Decode (any) message, that is encoded in image.
     Stop decoding when met with binary that starts with '1'.
     NOTE: Standard ASCII character has value from 0 to 127.
-    Binary of characters wouldn't start with 1 (since it cannot go to 128).    
+    Binary of characters wouldn't start with 1 (since it cannot go to 128).
 
     Args:
         img (str): Path to image file for decoding.
-    
+
     Returns:
         out (str): Decoded message.
     """
     shape, img = load_image(img)
-    extract_char = ''
-    msg = ''
+    extract_char = ""
+    msg = ""
     for i in range(len(img)):
-        extract_char+=bin(img[i])[-1]
+        extract_char += bin(img[i])[-1]
         # This indicates a non-ascii character.
         # This is likely the '1' placed during encoding,
         # to indicate end of message.
-        if len(extract_char)==1 and extract_char[0] == '1':
+        if len(extract_char) == 1 and extract_char[0] == "1":
             break
         # Convert the 8-bit binary into character and append
-        if len(extract_char)==8:
-            msg+=chr(int(extract_char,2))
+        if len(extract_char) == 8:
+            msg += chr(int(extract_char, 2))
             # Reset variable to get the 8-bit binary
-            extract_char = ''
+            extract_char = ""
     return msg
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     opt = input("1: Encode, 2: Decode\n")
-    if opt == '1':
+    if opt == "1":
         img = input("Enter image to be encoded(with extension): ")
         msg = input("Enter secret message to encode: ")
         img = encode_msg(msg, img)
-        img.save(input("Enter filename to save encoded image(without extension): ") + ".png")
-    elif opt == '2':
+        img.save(
+            input("Enter filename to save encoded image(without extension): ") + ".png"
+        )
+    elif opt == "2":
         img = input("Enter image to be decoded(with extension): ")
-        print("Secret Message: {}".format(decode_msg(img)))
+        print(f"Secret Message: {decode_msg(img)}")
